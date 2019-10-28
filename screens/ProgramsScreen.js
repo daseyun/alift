@@ -9,25 +9,97 @@ import {
   View,
   Button,
   AlertIOS,
+  FlatList
 } from 'react-native';
 import { WebBrowser } from 'expo';
 
 import { MonoText } from '../components/StyledText';
+import GLOBAL from '../components/global.js';
 
 export default class HomeScreen extends React.Component {
+
+  constructor(props){
+    super(props);
+    this.state ={ isLoading: true, globalTesting: ''}
+  }
+
+
   static navigationOptions = {
     header: null,
   };
 
+
+  componentDidMount(){
+    // return fetch('https://facebook.github.io/react-native/movies.json')
+    return fetch('https://alift.herokuapp.com/muscleGroups.json')
+      .then((response) => response.json())
+      .then((responseJson) => {
+
+        this.setState({
+          isLoading: false,
+          // dataSource: responseJson.movies,
+          dataSource: responseJson
+        }, function(){
+
+        });
+
+      })
+      .catch((error) =>{
+        console.error(error);
+      });
+  }
+
   render() {
+
+    // GLOBAL.programsScreen = this;
+
+
+    if (this.state.isLoading) {
+      return(
+        <View style={styles.container}>
+          <Text>
+            Now loading
+          </Text>
+        </View>
+      )
+    }
+    else {
+      
+      let muscleGroups = this.state.dataSource.map((val, key) => {
+        return <View key={key} style={styles.item}>
+                    <Text> {val.muscle_group_name}</Text>
+        </View>
+
+
+      // let movies = this.state.dataSource.map((val, key) => {
+      //   return <View key={key} style={styles.item}>
+      //               <Text> {val.title}</Text>
+      //   </View>
+      })
+  
     return (
       <View style={styles.container}>
        
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-            
+       
             <View style={styles.programTitleContainer}>
                 <Text style={styles.programScreenTitle}>Programs</Text>
             </View>
+
+
+{/*  */}
+
+<View style={styles.getStartedContainer}>
+          <Text>
+            Hello
+          </Text>
+            {muscleGroups}
+            <Text>HELLLOOOOO</Text>
+            <Text>{GLOBAL.userToken}</Text>
+
+        </View>  
+
+{/*  */}
           <View style={styles.getStartedContainer}>
 
 
@@ -69,7 +141,7 @@ export default class HomeScreen extends React.Component {
 
       </View>
       
-    );
+    );}
   }
 
   _handleCreateNewProgram = (newProgramName) => {
