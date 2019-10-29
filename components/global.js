@@ -1,3 +1,4 @@
 module.exports = {
-    userToken: null
+    userToken: null,
+    user: null,
 };
